@@ -1,0 +1,11 @@
+Date,Time,Meal Type,Food Item,Quantity Wasted,Unit,Reason
+30-09-2025,08:30 AM,Morning Meal,Rice,2.5,kg,Excess Preparation
+30-09-2025,08:45 AM,Morning Meal,Dal,1.2,kg,Student Leftover
+30-09-2025,09:15 AM,Morning Meal,Vegetables,0.8,kg,Overcooked
+30-09-2025,07:30 PM,Night Meal,Roti/Chapati,15,pieces,Student Leftover
+30-09-2025,08:00 PM,Night Meal,Curry,1.5,kg,Excess Preparation
+30-09-2025,08:30 PM,Night Meal,Curd,0.5,liters,Spoiled
+29-09-2025,08:20 AM,Morning Meal,Sambar,1.0,kg,Undercooked
+29-09-2025,08:50 AM,Morning Meal,Rice,3.0,kg,Student Leftover
+29-09-2025,07:45 PM,Night Meal,Vegetables,1.2,kg,Excess Preparation
+29-09-2025,08:15 PM,Night Meal,Bread,8,pieces,Student Leftover

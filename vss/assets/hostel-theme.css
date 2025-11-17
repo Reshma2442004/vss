@@ -1,0 +1,340 @@
+/* VSS Hostel Management System - Professional Theme */
+
+:root {
+    /* Hostel-themed color palette */
+    --primary-blue: #2c5aa0;
+    --secondary-orange: #ff8c42;
+    --accent-green: #52b788;
+    --warm-yellow: #ffd23f;
+    --soft-purple: #7209b7;
+    --neutral-gray: #6c757d;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --dark-text: #2d3436;
+    
+    /* Gradients */
+    --primary-gradient: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+    --secondary-gradient: linear-gradient(135deg, #ff8c42 0%, #f97316 100%);
+    --success-gradient: linear-gradient(135deg, #52b788 0%, #16a085 100%);
+    --warning-gradient: linear-gradient(135deg, #ffd23f 0%, #f39c12 100%);
+    --info-gradient: linear-gradient(135deg, #7209b7 0%, #5b21b6 100%);
+    
+    /* Shadows */
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --button-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Base Styles */
+body {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 50%, #fff3e0 100%);
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark-text);
+    line-height: 1.6;
+}
+
+/* Navigation & Header */
+.navbar-hostel {
+    background: var(--primary-gradient);
+    box-shadow: var(--card-shadow);
+    padding: 1rem 0;
+}
+
+.navbar-hostel .navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: white !important;
+}
+
+.navbar-hostel .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.navbar-hostel .nav-link:hover {
+    color: white !important;
+    transform: translateY(-1px);
+}
+
+/* Dashboard Cards */
+.hostel-card {
+    background: var(--white);
+    border: none;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.hostel-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.hostel-card-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 1.25rem 1.5rem;
+    border: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.hostel-card-body {
+    padding: 1.5rem;
+}
+
+/* Stat Cards */
+.stat-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.stat-card.primary::before { background: var(--primary-gradient); }
+.stat-card.secondary::before { background: var(--secondary-gradient); }
+.stat-card.success::before { background: var(--success-gradient); }
+.stat-card.warning::before { background: var(--warning-gradient); }
+.stat-card.info::before { background: var(--info-gradient); }
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.stat-icon.primary { background: linear-gradient(135deg, rgba(44, 90, 160, 0.1) 0%, rgba(30, 58, 138, 0.1) 100%); color: var(--primary-blue); }
+.stat-icon.secondary { background: linear-gradient(135deg, rgba(255, 140, 66, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%); color: var(--secondary-orange); }
+.stat-icon.success { background: linear-gradient(135deg, rgba(82, 183, 136, 0.1) 0%, rgba(22, 160, 133, 0.1) 100%); color: var(--accent-green); }
+.stat-icon.warning { background: linear-gradient(135deg, rgba(255, 210, 63, 0.1) 0%, rgba(243, 156, 18, 0.1) 100%); color: var(--warm-yellow); }
+.stat-icon.info { background: linear-gradient(135deg, rgba(114, 9, 183, 0.1) 0%, rgba(91, 33, 182, 0.1) 100%); color: var(--soft-purple); }
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-text);
+    margin: 0;
+}
+
+.stat-label {
+    color: var(--neutral-gray);
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Forms */
+.hostel-form-control {
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: var(--white);
+}
+
+.hostel-form-control:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+    outline: none;
+}
+
+.hostel-form-label {
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 0.5rem;
+}
+
+/* Buttons */
+.btn-hostel {
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: var(--button-shadow);
+    text-transform: none;
+}
+
+.btn-hostel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px 0 rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary-hostel {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.btn-secondary-hostel {
+    background: var(--secondary-gradient);
+    color: white;
+}
+
+.btn-success-hostel {
+    background: var(--success-gradient);
+    color: white;
+}
+
+.btn-warning-hostel {
+    background: var(--warning-gradient);
+    color: var(--dark-text);
+}
+
+.btn-info-hostel {
+    background: var(--info-gradient);
+    color: white;
+}
+
+/* Tables */
+.hostel-table {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+.hostel-table thead {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.hostel-table th {
+    font-weight: 600;
+    padding: 1rem;
+    border: none;
+}
+
+.hostel-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.hostel-table tbody tr:hover {
+    background: rgba(44, 90, 160, 0.05);
+}
+
+/* Progress Bars */
+.hostel-progress {
+    height: 8px;
+    border-radius: 10px;
+    background: #e5e7eb;
+    overflow: hidden;
+}
+
+.hostel-progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+/* Badges */
+.hostel-badge {
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.hostel-badge-primary { background: rgba(44, 90, 160, 0.1); color: var(--primary-blue); }
+.hostel-badge-success { background: rgba(82, 183, 136, 0.1); color: var(--accent-green); }
+.hostel-badge-warning { background: rgba(255, 210, 63, 0.1); color: #d97706; }
+.hostel-badge-danger { background: rgba(239, 68, 68, 0.1); color: #dc2626; }
+
+/* Alerts */
+.hostel-alert {
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--card-shadow);
+}
+
+.hostel-alert-success {
+    background: rgba(82, 183, 136, 0.1);
+    color: var(--accent-green);
+    border-left: 4px solid var(--accent-green);
+}
+
+.hostel-alert-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border-left: 4px solid #dc2626;
+}
+
+/* Dashboard Title */
+.hostel-dashboard-title {
+    color: var(--primary-blue);
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.hostel-dashboard-subtitle {
+    color: var(--neutral-gray);
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hostel-card-body {
+        padding: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+        text-align: center;
+    }
+    
+    .hostel-dashboard-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
