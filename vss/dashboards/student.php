@@ -10,10 +10,11 @@ if ($_SESSION['role'] != 'student') {
 
 // Get student details
 $student_query = executeQuery($pdo, "
-    SELECT s.*, h.name as hostel_name, h.location, r.room_number, r.hostel_id 
+    SELECT s.*, h.name as hostel_name, h.location, r.room_number, 
+           COALESCE(r.hostel_id, s.hostel_id) as hostel_id 
     FROM students s 
     LEFT JOIN rooms r ON s.room_id = r.id 
-    LEFT JOIN hostels h ON r.hostel_id = h.id 
+    LEFT JOIN hostels h ON COALESCE(r.hostel_id, s.hostel_id) = h.id 
     WHERE s.user_id = ?
 ", [$_SESSION['user_id']]);
 
@@ -528,8 +529,11 @@ $my_feedback = array_slice($my_feedback, 0, 10); // Show last 10 feedback
                         <button class="btn btn-info w-100 mb-2" onclick="bookHealthAppointment()">
                             <i class="fas fa-user-md me-2"></i>Book Health Appointment
                         </button>
-                        <button class="btn btn-primary w-100 mb-2" onclick="scrollToFeedback()">
-                            <i class="fas fa-comment me-2"></i>Give Mess Feedback
+                        <button class="btn btn-primary w-100 mb-2" onclick="applyLeave()">
+                            <i class="fas fa-calendar-times me-2"></i>Apply for Leave
+                        </button>
+                        <button class="btn btn-secondary w-100 mb-2" onclick="uploadAvalon()">
+                            <i class="fas fa-upload me-2"></i>Upload Avalon
                         </button>
                     </div>
                 </div>
@@ -591,6 +595,88 @@ $my_feedback = array_slice($my_feedback, 0, 10); // Show last 10 feedback
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-warning" onclick="submitComplaintForm()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leave Application Modal -->
+    <div class="modal fade" id="leaveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Apply for Leave</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="leaveForm">
+                        <div class="mb-3">
+                            <label class="form-label">Leave Type</label>
+                            <select class="form-input" name="leave_type" required>
+                                <option value="">Select leave type</option>
+                                <option value="sick">Sick Leave</option>
+                                <option value="emergency">Emergency</option>
+                                <option value="personal">Personal</option>
+                                <option value="home">Home Visit</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" class="form-input" name="start_date" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" class="form-input" name="end_date" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Reason</label>
+                            <textarea class="form-input" name="reason" rows="4" placeholder="Please provide detailed reason for leave" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="submitLeaveForm()">Submit Application</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Avalon Upload Modal -->
+    <div class="modal fade" id="avalonModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Avalon</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="avalonForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-input" name="title" placeholder="Enter title for your avalon" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-input" name="description" rows="3" placeholder="Brief description (optional)"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Select File</label>
+                            <input type="file" class="form-input" name="avalon_file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+                            <small class="text-muted">Supported formats: PDF, DOC, DOCX, JPG, PNG (Max: 10MB)</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" onclick="submitAvalonForm()">Upload</button>
                 </div>
             </div>
         </div>
@@ -859,19 +945,65 @@ $my_feedback = array_slice($my_feedback, 0, 10); // Show last 10 feedback
             alert('Health appointment booking feature will be available soon!');
         }
 
-        function scrollToFeedback() {
-            document.getElementById('feedback').scrollIntoView({ behavior: 'smooth' });
-            // Highlight the feedback form briefly
-            const feedbackCard = document.getElementById('feedback');
-            feedbackCard.style.border = '2px solid #007bff';
-            setTimeout(() => {
-                feedbackCard.style.border = '';
-            }, 2000);
+        function applyLeave() {
+            new bootstrap.Modal(document.getElementById('leaveModal')).show();
+        }
+
+        function uploadAvalon() {
+            new bootstrap.Modal(document.getElementById('avalonModal')).show();
         }
 
         function submitComplaintForm() {
             alert('Complaint submitted successfully!');
             bootstrap.Modal.getInstance(document.getElementById('complaintModal')).hide();
+        }
+
+        function submitLeaveForm() {
+            const form = document.getElementById('leaveForm');
+            const formData = new FormData(form);
+            formData.append('action', 'submit_leave');
+            
+            fetch('../handlers/dashboard_actions.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Leave application submitted successfully!');
+                    bootstrap.Modal.getInstance(document.getElementById('leaveModal')).hide();
+                    form.reset();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error submitting leave application: ' + error.message);
+            });
+        }
+
+        function submitAvalonForm() {
+            const form = document.getElementById('avalonForm');
+            const formData = new FormData(form);
+            formData.append('action', 'upload_avalon');
+            
+            fetch('../handlers/dashboard_actions.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Avalon uploaded successfully!');
+                    bootstrap.Modal.getInstance(document.getElementById('avalonModal')).hide();
+                    form.reset();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error uploading avalon: ' + error.message);
+            });
         }
 
         // Auto-hide alerts

@@ -496,50 +496,26 @@ try {
             </div>
         </div>
         
-        <!-- Biometric Attendance Reports -->
-        <div id="biometric" class="row mb-4">
+        <!-- Recent Attendance Reports -->
+        <div id="attendance-reports" class="row mb-4">
             <div class="col-md-6 mb-3">
                 <div class="modern-card">
                     <div class="card-header">
-                        <h5><i class="fas fa-fingerprint me-2"></i>Mess Attendance</h5>
+                        <h5><i class="fas fa-calendar-check me-2"></i>Recent Attendance</h5>
                     </div>
                     <div class="card-body">
                         <?php 
-                        require_once '../AttendanceProcessor.php';
-                        $processor = new AttendanceProcessor($pdo);
-                        $messReport = $processor->getAttendanceReport($hostel_id, date('Y-m-d', strtotime('-7 days')), date('Y-m-d'));
+                        $recent_attendance = $pdo->prepare("
+                            SELECT s.name, s.grn, a.date, a.status
+                            FROM attendance a
+                            JOIN students s ON a.student_id = s.id
+                            WHERE s.hostel_id = ? AND a.date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                            ORDER BY a.date DESC, s.name
+                            LIMIT 20
+                        ");
+                        $recent_attendance->execute([$hostel_id]);
+                        $attendance_records = $recent_attendance->fetchAll();
                         ?>
-                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Student</th>
-                                        <th>Date</th>
-                                        <th>Morning</th>
-                                        <th>Night</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($messReport as $record): ?>
-                                    <tr>
-                                        <td><?php echo $record['name']; ?></td>
-                                        <td><?php echo date('M d', strtotime($record['date'])); ?></td>
-                                        <td><span class="badge bg-<?php echo $record['morning_meal'] == 'Present' ? 'success' : 'danger'; ?>"><?php echo $record['morning_meal']; ?></span></td>
-                                        <td><span class="badge bg-<?php echo $record['night_meal'] == 'Present' ? 'success' : 'danger'; ?>"><?php echo $record['night_meal']; ?></span></td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <div class="modern-card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-home me-2"></i>Hostel Attendance</h5>
-                    </div>
-                    <div class="card-body">
                         <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
                             <table class="table table-sm">
                                 <thead>
@@ -550,17 +526,64 @@ try {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($messReport as $record): ?>
+                                    <?php if(empty($attendance_records)): ?>
+                                        <tr><td colspan="3" class="text-center text-muted">No attendance records</td></tr>
+                                    <?php else: ?>
+                                        <?php foreach($attendance_records as $record): ?>
+                                        <tr>
+                                            <td><?php echo $record['name']; ?></td>
+                                            <td><?php echo date('M d', strtotime($record['date'])); ?></td>
+                                            <td><span class="badge bg-<?php echo $record['status'] == 'present' ? 'success' : 'danger'; ?>"><?php echo ucfirst($record['status']); ?></span></td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="modern-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-utensils me-2"></i>Mess Attendance</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php 
+                        $mess_attendance = $pdo->prepare("
+                            SELECT s.name, ma.date, ma.meal_type, ma.taken
+                            FROM mess_attendance ma
+                            JOIN students s ON ma.student_id = s.id
+                            WHERE s.hostel_id = ? AND ma.date >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)
+                            ORDER BY ma.date DESC, s.name
+                            LIMIT 15
+                        ");
+                        $mess_attendance->execute([$hostel_id]);
+                        $mess_records = $mess_attendance->fetchAll();
+                        ?>
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-sm">
+                                <thead>
                                     <tr>
-                                        <td><?php echo $record['name']; ?></td>
-                                        <td><?php echo date('M d', strtotime($record['date'])); ?></td>
-                                        <td>
-                                            <span class="badge bg-<?php echo $record['hostel'] == 'Present' ? 'success' : ($record['hostel'] == 'Late' ? 'warning' : 'danger'); ?>">
-                                                <?php echo $record['hostel']; ?>
-                                            </span>
-                                        </td>
+                                        <th>Student</th>
+                                        <th>Date</th>
+                                        <th>Meal</th>
+                                        <th>Status</th>
                                     </tr>
-                                    <?php endforeach; ?>
+                                </thead>
+                                <tbody>
+                                    <?php if(empty($mess_records)): ?>
+                                        <tr><td colspan="4" class="text-center text-muted">No mess attendance records</td></tr>
+                                    <?php else: ?>
+                                        <?php foreach($mess_records as $record): ?>
+                                        <tr>
+                                            <td><?php echo $record['name']; ?></td>
+                                            <td><?php echo date('M d', strtotime($record['date'])); ?></td>
+                                            <td><?php echo ucfirst($record['meal_type']); ?></td>
+                                            <td><span class="badge bg-<?php echo $record['taken'] ? 'success' : 'danger'; ?>"><?php echo $record['taken'] ? 'Taken' : 'Missed'; ?></span></td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -639,6 +662,150 @@ try {
             </div>
         </div>
         
+        <!-- Leave Applications Section -->
+        <div id="leave-applications" class="row mb-4">
+            <div class="col-12">
+                <div class="modern-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-calendar-times me-2"></i>Leave Applications</h5>
+                        <?php 
+                        $leave_query = $pdo->prepare("
+                            SELECT la.*, s.name as student_name, s.grn 
+                            FROM leave_applications la 
+                            JOIN students s ON la.student_id = s.id 
+                            WHERE s.hostel_id = ? 
+                            ORDER BY la.applied_at DESC
+                        ");
+                        $leave_query->execute([$hostel_id]);
+                        $leave_applications = $leave_query->fetchAll();
+                        ?>
+                        <span class="badge bg-primary"><?php echo count($leave_applications); ?> Applications</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Leave Type</th>
+                                        <th>Duration</th>
+                                        <th>Reason</th>
+                                        <th>Applied Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($leave_applications)): ?>
+                                        <tr><td colspan="7" class="text-center text-muted">No leave applications</td></tr>
+                                    <?php else: ?>
+                                        <?php foreach($leave_applications as $leave): ?>
+                                        <tr>
+                                            <td>
+                                                <strong><?php echo $leave['student_name']; ?></strong><br>
+                                                <small class="text-muted"><?php echo $leave['grn']; ?></small>
+                                            </td>
+                                            <td><span class="badge bg-info"><?php echo ucfirst($leave['leave_type']); ?></span></td>
+                                            <td>
+                                                <?php echo date('M d', strtotime($leave['start_date'])); ?> - 
+                                                <?php echo date('M d, Y', strtotime($leave['end_date'])); ?>
+                                            </td>
+                                            <td><?php echo substr($leave['reason'], 0, 50) . (strlen($leave['reason']) > 50 ? '...' : ''); ?></td>
+                                            <td><?php echo date('M d, Y', strtotime($leave['applied_at'])); ?></td>
+                                            <td>
+                                                <span class="badge bg-<?php echo $leave['status'] == 'approved' ? 'success' : ($leave['status'] == 'rejected' ? 'danger' : 'warning'); ?>">
+                                                    <?php echo ucfirst($leave['status']); ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary me-1" onclick="viewLeave(<?php echo $leave['id']; ?>, '<?php echo addslashes($leave['reason']); ?>')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <?php if($leave['status'] == 'pending'): ?>
+                                                <button class="btn btn-sm btn-success me-1" onclick="updateLeaveStatus(<?php echo $leave['id']; ?>, 'approved')">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" onclick="updateLeaveStatus(<?php echo $leave['id']; ?>, 'rejected')">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avalon Uploads Section -->
+        <div id="avalon-uploads" class="row mb-4">
+            <div class="col-12">
+                <div class="modern-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-upload me-2"></i>Avalon Uploads</h5>
+                        <?php 
+                        $avalon_query = $pdo->prepare("
+                            SELECT au.*, s.name as student_name, s.grn 
+                            FROM avalon_uploads au 
+                            JOIN students s ON au.student_id = s.id 
+                            WHERE s.hostel_id = ? 
+                            ORDER BY au.uploaded_at DESC
+                        ");
+                        $avalon_query->execute([$hostel_id]);
+                        $avalon_uploads = $avalon_query->fetchAll();
+                        ?>
+                        <span class="badge bg-primary"><?php echo count($avalon_uploads); ?> Files</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Title</th>
+                                        <th>File Name</th>
+                                        <th>Size</th>
+                                        <th>Uploaded Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($avalon_uploads)): ?>
+                                        <tr><td colspan="6" class="text-center text-muted">No avalon uploads</td></tr>
+                                    <?php else: ?>
+                                        <?php foreach($avalon_uploads as $avalon): ?>
+                                        <tr>
+                                            <td>
+                                                <strong><?php echo $avalon['student_name']; ?></strong><br>
+                                                <small class="text-muted"><?php echo $avalon['grn']; ?></small>
+                                            </td>
+                                            <td><?php echo $avalon['title']; ?></td>
+                                            <td><?php echo $avalon['file_name']; ?></td>
+                                            <td><?php echo round($avalon['file_size'] / 1024, 2); ?> KB</td>
+                                            <td><?php echo date('M d, Y H:i', strtotime($avalon['uploaded_at'])); ?></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary me-1" onclick="downloadFile('<?php echo $avalon['file_path']; ?>')">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-info" onclick="viewAvalonDetails(<?php echo $avalon['id']; ?>, '<?php echo addslashes($avalon['description']); ?>')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Mess Feedback Section -->
         <div id="feedback" class="row mb-4">
             <div class="col-12">
@@ -740,6 +907,42 @@ try {
         </div>
     </div>
 
+    <!-- View Leave Modal -->
+    <div class="modal fade" id="viewLeaveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Leave Application Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="leaveReason"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Avalon Details Modal -->
+    <div class="modal fade" id="viewAvalonModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Avalon Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="avalonDescription"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // View feedback function
@@ -790,6 +993,45 @@ try {
                     alert('Error: ' + data.message);
                 }
             });
+        }
+        
+        // View leave application details
+        function viewLeave(id, reason) {
+            document.getElementById('leaveReason').textContent = reason;
+            new bootstrap.Modal(document.getElementById('viewLeaveModal')).show();
+        }
+        
+        // Update leave application status
+        function updateLeaveStatus(id, status) {
+            const formData = new FormData();
+            formData.append('action', 'update_leave_status');
+            formData.append('leave_id', id);
+            formData.append('status', status);
+            
+            fetch('../handlers/dashboard_actions.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Leave application ' + status + '!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            });
+        }
+        
+        // View avalon details
+        function viewAvalonDetails(id, description) {
+            document.getElementById('avalonDescription').textContent = description || 'No description provided';
+            new bootstrap.Modal(document.getElementById('viewAvalonModal')).show();
+        }
+        
+        // Download file
+        function downloadFile(filePath) {
+            window.open(filePath, '_blank');
         }
         
         // Smooth scrolling for navigation links

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../config/database.php';
+require_once '../includes/NotificationTriggers.php';
 
 header('Content-Type: application/json');
 
@@ -60,6 +61,12 @@ if ($_POST && isset($_POST['action'])) {
                 }
                 
                 $feedback_id = $pdo->lastInsertId();
+                
+                // Send email notification
+                if ($feedback_category === 'mess') {
+                    NotificationTriggers::onMessFeedbackSubmitted($feedback_id);
+                }
+                
                 echo json_encode(['success' => true, 'message' => ucfirst($feedback_category) . ' feedback submitted successfully!', 'feedback_id' => $feedback_id]);
                 break;
                 
@@ -161,7 +168,166 @@ if ($_POST && isset($_POST['action'])) {
                 $stmt = $pdo->prepare("UPDATE scholarships SET status = ?, approved_by = ?, approved_date = NOW() WHERE id = ?");
                 $stmt->execute([$status, $_SESSION['user_id'], $scholarship_id]);
                 
+                // Send email notification
+                NotificationTriggers::onScholarshipStatusUpdated($scholarship_id);
+                
                 echo json_encode(['success' => true, 'message' => 'Scholarship status updated successfully']);
+                break;
+                
+            case 'submit_leave':
+                $student_query = $pdo->prepare("SELECT id FROM students WHERE user_id = ?");
+                $student_query->execute([$_SESSION['user_id']]);
+                $student = $student_query->fetch();
+                
+                if (!$student) {
+                    echo json_encode(['success' => false, 'message' => 'Student record not found']);
+                    break;
+                }
+                
+                // Create table if not exists
+                $pdo->exec("CREATE TABLE IF NOT EXISTS leave_applications (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    student_id INT NOT NULL,
+                    leave_type ENUM('sick', 'emergency', 'personal', 'home', 'other') NOT NULL,
+                    start_date DATE NOT NULL,
+                    end_date DATE NOT NULL,
+                    reason TEXT NOT NULL,
+                    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+                    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    reviewed_at TIMESTAMP NULL,
+                    reviewed_by INT NULL,
+                    rector_comments TEXT NULL,
+                    FOREIGN KEY (student_id) REFERENCES students(id)
+                )");
+                
+                $stmt = $pdo->prepare("INSERT INTO leave_applications (student_id, leave_type, start_date, end_date, reason) VALUES (?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $student['id'],
+                    $_POST['leave_type'],
+                    $_POST['start_date'],
+                    $_POST['end_date'],
+                    $_POST['reason']
+                ]);
+                
+                $leave_id = $pdo->lastInsertId();
+                
+                // Send email notification to rector
+                $emailNotification = new EmailNotification();
+                $emailNotification->sendBulkNotification('rector', $_SESSION['hostel_id'] ?? 1, 
+                    'New Leave Application', 
+                    'A new leave application has been submitted and requires your review.');
+                
+                echo json_encode(['success' => true, 'message' => 'Leave application submitted successfully']);
+                break;
+                
+            case 'upload_avalon':
+                $student_query = $pdo->prepare("SELECT id FROM students WHERE user_id = ?");
+                $student_query->execute([$_SESSION['user_id']]);
+                $student = $student_query->fetch();
+                
+                if (!$student) {
+                    echo json_encode(['success' => false, 'message' => 'Student record not found']);
+                    break;
+                }
+                
+                // Create table if not exists
+                $pdo->exec("CREATE TABLE IF NOT EXISTS avalon_uploads (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    student_id INT NOT NULL,
+                    title VARCHAR(255) NOT NULL,
+                    description TEXT,
+                    file_name VARCHAR(255) NOT NULL,
+                    file_path VARCHAR(500) NOT NULL,
+                    file_size INT NOT NULL,
+                    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (student_id) REFERENCES students(id)
+                )");
+                
+                if (isset($_FILES['avalon_file']) && $_FILES['avalon_file']['error'] === 0) {
+                    $upload_dir = '../uploads/avalon/';
+                    if (!is_dir($upload_dir)) {
+                        mkdir($upload_dir, 0777, true);
+                    }
+                    
+                    $file_name = $_FILES['avalon_file']['name'];
+                    $file_size = $_FILES['avalon_file']['size'];
+                    $file_tmp = $_FILES['avalon_file']['tmp_name'];
+                    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                    
+                    $allowed_ext = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'];
+                    if (!in_array($file_ext, $allowed_ext)) {
+                        echo json_encode(['success' => false, 'message' => 'Invalid file type']);
+                        break;
+                    }
+                    
+                    if ($file_size > 10 * 1024 * 1024) { // 10MB limit
+                        echo json_encode(['success' => false, 'message' => 'File size too large (max 10MB)']);
+                        break;
+                    }
+                    
+                    $new_file_name = $student['id'] . '_' . time() . '.' . $file_ext;
+                    $file_path = $upload_dir . $new_file_name;
+                    
+                    if (move_uploaded_file($file_tmp, $file_path)) {
+                        $stmt = $pdo->prepare("INSERT INTO avalon_uploads (student_id, title, description, file_name, file_path, file_size) VALUES (?, ?, ?, ?, ?, ?)");
+                        $stmt->execute([
+                            $student['id'],
+                            $_POST['title'],
+                            $_POST['description'] ?? '',
+                            $file_name,
+                            $file_path,
+                            $file_size
+                        ]);
+                        
+                        echo json_encode(['success' => true, 'message' => 'Avalon uploaded successfully']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to upload file']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'No file uploaded or upload error']);
+                }
+                break;
+                
+            case 'update_leave_status':
+                $leave_id = $_POST['leave_id'];
+                $status = $_POST['status'];
+                
+                // Create table if not exists
+                $pdo->exec("CREATE TABLE IF NOT EXISTS leave_applications (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    student_id INT NOT NULL,
+                    leave_type ENUM('sick', 'emergency', 'personal', 'home', 'other') NOT NULL,
+                    start_date DATE NOT NULL,
+                    end_date DATE NOT NULL,
+                    reason TEXT NOT NULL,
+                    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+                    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    reviewed_at TIMESTAMP NULL,
+                    reviewed_by INT NULL,
+                    rector_comments TEXT NULL,
+                    FOREIGN KEY (student_id) REFERENCES students(id)
+                )");
+                
+                $stmt = $pdo->prepare("UPDATE leave_applications SET status = ?, reviewed_by = ?, reviewed_at = NOW() WHERE id = ?");
+                $stmt->execute([$status, $_SESSION['user_id'], $leave_id]);
+                
+                if ($stmt->rowCount() > 0) {
+                    // Send email notification to student
+                    $student_stmt = $pdo->prepare("SELECT s.name, s.email FROM students s JOIN leave_applications la ON s.id = la.student_id WHERE la.id = ?");
+                    $student_stmt->execute([$leave_id]);
+                    $student_data = $student_stmt->fetch();
+                    
+                    if ($student_data && !empty($student_data['email'])) {
+                        $emailNotification = new EmailNotification();
+                        $subject = "Leave Application {$status}";
+                        $message = "Dear {$student_data['name']}, your leave application has been {$status}.";
+                        $emailNotification->sendEmail($student_data['email'], $subject, $message);
+                    }
+                    
+                    echo json_encode(['success' => true, 'message' => 'Leave application status updated successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Leave application not found']);
+                }
                 break;
                 
             default:
