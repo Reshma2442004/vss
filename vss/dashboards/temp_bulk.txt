@@ -1,0 +1,91 @@
+﻿        // Bulk email functionality
+        let bulkEmailMode = false;
+        
+        function toggleBulkEmailMode() {
+            bulkEmailMode = !bulkEmailMode;
+            const bulkControls = document.getElementById('bulkEmailControls');
+            const bulkHeaders = document.querySelectorAll('#bulkSelectHeader, .bulk-select-cell');
+            
+            if (bulkEmailMode) {
+                bulkControls.style.display = 'block';
+                bulkHeaders.forEach(el => el.style.display = 'table-cell');
+                deselectAllStudents();
+            } else {
+                bulkControls.style.display = 'none';
+                bulkHeaders.forEach(el => el.style.display = 'none');
+                deselectAllStudents();
+            }
+        }
+        
+        function selectAllStudents() {
+            const checkboxes = document.querySelectorAll('.student-checkbox');
+            checkboxes.forEach(cb => {
+                if (cb.closest('tr').style.display !== 'none') {
+                    cb.checked = true;
+                }
+            });
+            document.getElementById('selectAllCheckbox').checked = true;
+            updateSelectedCount();
+        }
+        
+        function deselectAllStudents() {
+            const checkboxes = document.querySelectorAll('.student-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            document.getElementById('selectAllCheckbox').checked = false;
+            updateSelectedCount();
+        }
+        
+        function toggleAllStudents() {
+            const selectAll = document.getElementById('selectAllCheckbox').checked;
+            const checkboxes = document.querySelectorAll('.student-checkbox');
+            checkboxes.forEach(cb => {
+                if (cb.closest('tr').style.display !== 'none') {
+                    cb.checked = selectAll;
+                }
+            });
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            const selected = document.querySelectorAll('.student-checkbox:checked');
+            const count = selected.length;
+            document.getElementById('selectedCount').textContent = count;
+            document.getElementById('sendBulkBtn').disabled = count === 0;
+        }
+        
+        function sendBulkEmail() {
+            const selected = document.querySelectorAll('.student-checkbox:checked');
+            if (selected.length === 0) {
+                alert('Please select at least one student');
+                return;
+            }
+            
+            const recipients = [];
+            selected.forEach(cb => {
+                recipients.push({
+                    id: cb.dataset.studentId,
+                    name: cb.dataset.studentName,
+                    email: cb.dataset.studentEmail
+                });
+            });
+            
+            // Populate bulk email modal
+            document.getElementById('bulkRecipientCount').textContent = recipients.length;
+            
+            const recipientsList = document.getElementById('bulkRecipientsList');
+            recipientsList.innerHTML = '';
+            recipients.forEach(recipient => {
+                const div = document.createElement('div');
+                div.className = 'mb-1';
+                div.innerHTML = `<small><strong>${recipient.name}</strong> (${recipient.email})</small>`;
+                recipientsList.appendChild(div);
+            });
+            
+            // Store recipients for form submission
+            document.getElementById('bulkEmailForm').dataset.recipients = JSON.stringify(recipients);
+            
+            new bootstrap.Modal(document.getElementById('bulkEmailModal')).show();
+        }
+        
+        // Handle bulk email form submission
+        document.getElementById('bulkEmailForm').addEventListener('submit', function(e) {

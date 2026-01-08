@@ -84,7 +84,9 @@ if ($_POST) {
             
             $stmt = $pdo->prepare("INSERT INTO food_wastage (hostel_id, date, meal_type, food_item, quantity_wasted, unit, reason, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
             $stmt->execute([$hostel_id, $wastage_date, $meal_type, $food_item, $quantity_wasted, $unit, $reason]);
-            $success = "Food wastage record added successfully";
+            $_SESSION['success'] = "Food wastage record added successfully";
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit;
         }
         
         if (isset($_POST['edit_wastage'])) {
@@ -96,14 +98,18 @@ if ($_POST) {
             
             $stmt = $pdo->prepare("UPDATE food_wastage SET food_item = ?, quantity_wasted = ?, unit = ?, reason = ? WHERE id = ? AND hostel_id = ?");
             $stmt->execute([$food_item, $quantity_wasted, $unit, $reason, $wastage_id, $hostel_id]);
-            $success = "Wastage record updated successfully";
+            $_SESSION['success'] = "Wastage record updated successfully";
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit;
         }
         
         if (isset($_POST['delete_wastage'])) {
             $wastage_id = $_POST['wastage_id'];
             $stmt = $pdo->prepare("DELETE FROM food_wastage WHERE id = ? AND hostel_id = ?");
             $stmt->execute([$wastage_id, $hostel_id]);
-            $success = "Wastage record deleted successfully";
+            $_SESSION['success'] = "Wastage record deleted successfully";
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit;
         }
     } catch (Exception $e) {
         $error = "Error: " . $e->getMessage();
@@ -163,6 +169,13 @@ if (isset($_GET['generate_report'])) {
         
         // Write header
         fputcsv($output, ['Date', 'Student ID', 'GRN', 'Student Name', 'Meal Type', 'Attendance Status', 'Time']);
+        
+        // Add time column if it doesn't exist
+        try {
+            $pdo->exec("ALTER TABLE mess_attendance ADD COLUMN time TIME DEFAULT '00:00:00'");
+        } catch (Exception $e) {
+            // Column already exists or other error, continue
+        }
         
         // Get all attendance records for the date
         $stmt = $pdo->prepare("
@@ -880,17 +893,22 @@ $meal_statistics = $meal_stats ? $meal_stats->fetchAll(PDO::FETCH_KEY_PAIR) : []
                                                 <span class="badge bg-<?php echo $status_color; ?>"><?php echo ucfirst($feedback['status']); ?></span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-primary me-1" onclick="viewFeedback(<?php echo $feedback['id']; ?>, '<?php echo addslashes($feedback['message']); ?>')">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <?php if($feedback['status'] == 'pending'): ?>
-                                                <button class="btn btn-sm btn-success me-1" onclick="updateFeedbackStatus(<?php echo $feedback['id']; ?>, 'reviewed')">
-                                                    <i class="fas fa-check"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-warning" onclick="updateFeedbackStatus(<?php echo $feedback['id']; ?>, 'resolved')">
-                                                    <i class="fas fa-check-double"></i>
-                                                </button>
-                                                <?php endif; ?>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-sm btn-primary" onclick="viewFeedback(<?php echo $feedback['id']; ?>, '<?php echo addslashes($feedback['message']); ?>', '<?php echo addslashes($feedback['photo_path'] ?? ''); ?>')" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-info" onclick="openMessageModal('student', <?php echo $feedback['student_id']; ?>, '<?php echo addslashes($feedback['student_name']); ?>')" title="Send Message">
+                                                        <i class="fas fa-envelope"></i>
+                                                    </button>
+                                                    <?php if($feedback['status'] == 'pending'): ?>
+                                                    <button class="btn btn-sm btn-success" onclick="updateFeedbackStatus(<?php echo $feedback['id']; ?>, 'reviewed')" title="Mark Reviewed">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-warning" onclick="updateFeedbackStatus(<?php echo $feedback['id']; ?>, 'resolved')" title="Mark Resolved">
+                                                        <i class="fas fa-check-double"></i>
+                                                    </button>
+                                                    <?php endif; ?>
+                                                </div>
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>
@@ -914,6 +932,29 @@ $meal_statistics = $meal_stats ? $meal_stats->fetchAll(PDO::FETCH_KEY_PAIR) : []
                 </div>
                 <div class="modal-body">
                     <p id="feedbackMessage"></p>
+                    <div id="feedbackPhotoDiv" style="display: none;">
+                        <hr>
+                        <h6>Attached Photo:</h6>
+                        <img id="feedbackPhotoImg" src="" class="img-fluid" style="max-height: 300px; cursor: pointer;" onclick="openPhotoModal(this.src)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Viewer Modal -->
+    <div class="modal fade" id="photoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Feedback Photo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalPhotoImg" src="" class="img-fluid" style="max-width: 100%; max-height: 70vh;">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -1084,6 +1125,8 @@ $meal_statistics = $meal_stats ? $meal_stats->fetchAll(PDO::FETCH_KEY_PAIR) : []
     </div>
     <?php endif; ?>
 
+    <?php include '../includes/message_component.php'; ?>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Initialize progress circles
@@ -1322,9 +1365,26 @@ $meal_statistics = $meal_stats ? $meal_stats->fetchAll(PDO::FETCH_KEY_PAIR) : []
         }
 
         // View feedback function
-        function viewFeedback(id, message) {
+        function viewFeedback(id, message, photoPath) {
             document.getElementById('feedbackMessage').textContent = message;
+            
+            const photoDiv = document.getElementById('feedbackPhotoDiv');
+            const photoImg = document.getElementById('feedbackPhotoImg');
+            
+            if (photoPath && photoPath.trim() !== '') {
+                photoImg.src = photoPath;
+                photoDiv.style.display = 'block';
+            } else {
+                photoDiv.style.display = 'none';
+            }
+            
             new bootstrap.Modal(document.getElementById('viewFeedbackModal')).show();
+        }
+        
+        // Open photo in modal
+        function openPhotoModal(src) {
+            document.getElementById('modalPhotoImg').src = src;
+            new bootstrap.Modal(document.getElementById('photoModal')).show();
         }
         
         // Update feedback status

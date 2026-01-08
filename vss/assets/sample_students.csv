@@ -1,0 +1,6 @@
+GRN no.,First Name,Middle Name,Last Name,Mother's Name,Student Mobile,Parents Mobile,Email,Course,Faculty,Samiti Year,College Year,Duration,Hostel Allocation,Wing,Floor,Room no.
+GRN001,John,Michael,Doe,Jane Doe,9876543210,9876543211,john.doe@email.com,Computer Science,Engineering,1,1,4,Hostel A,North Wing,1,101
+GRN002,Jane,Katherine,Smith,Mary Smith,9876543212,9876543213,jane.smith@email.com,Information Technology,Engineering,1,1,4,Hostel A,South Wing,1,102
+GRN003,Robert,James,Johnson,Lisa Johnson,9876543214,9876543215,robert.johnson@email.com,Mechanical Engineering,Engineering,2,2,4,Hostel A,East Wing,2,201
+GRN004,Emily,Rose,Davis,Sarah Davis,9876543216,9876543217,emily.davis@email.com,Civil Engineering,Engineering,1,1,4,Hostel A,West Wing,1,103
+GRN005,Michael,David,Wilson,Jennifer Wilson,9876543218,9876543219,michael.wilson@email.com,Electrical Engineering,Engineering,3,3,4,Hostel A,North Wing,3,301

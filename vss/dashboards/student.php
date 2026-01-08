@@ -130,6 +130,7 @@ $my_feedback = array_slice($my_feedback, 0, 10); // Show last 10 feedback
                             <i class="fas fa-user-circle me-2"></i><?php echo $student['name']; ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="openEditProfileModal()"><i class="fas fa-user-edit me-2"></i>Edit Profile</a></li>
                             <li><a class="dropdown-item" href="../auth/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
@@ -436,6 +437,76 @@ $my_feedback = array_slice($my_feedback, 0, 10); // Show last 10 feedback
                     </div>
                 </div>
 
+                <!-- My Leave Applications -->
+                <div class="modern-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-times"></i> My Leave Applications
+                        </h3>
+                        <button class="btn btn-sm btn-outline-primary" onclick="refreshLeaveStatus()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <div class="modern-table-container">
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Leave Type</th>
+                                        <th>Duration</th>
+                                        <th>Applied Date</th>
+                                        <th>Status</th>
+                                        <th>Reviewed By</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaveTableBody">
+                                    <?php 
+                                    $leave_query = executeQuery($pdo, "SELECT la.*, u.username as reviewed_by_name FROM leave_applications la LEFT JOIN users u ON la.reviewed_by = u.id WHERE la.student_id = ? ORDER BY la.applied_at DESC", [$student['id']]);
+                                    $leave_applications = $leave_query ? $leave_query->fetchAll() : [];
+                                    ?>
+                                    <?php if (empty($leave_applications)): ?>
+                                        <tr><td colspan="6" class="text-center text-muted">No leave applications submitted yet</td></tr>
+                                    <?php else: ?>
+                                        <?php foreach($leave_applications as $leave): ?>
+                                        <tr>
+                                            <td><strong>#<?php echo str_pad($leave['id'], 4, '0', STR_PAD_LEFT); ?></strong></td>
+                                            <td><span class="badge bg-info"><?php echo ucfirst($leave['leave_type']); ?></span></td>
+                                            <td>
+                                                <?php echo date('M d', strtotime($leave['start_date'])); ?> - 
+                                                <?php echo date('M d, Y', strtotime($leave['end_date'])); ?>
+                                            </td>
+                                            <td><?php echo date('M d, Y', strtotime($leave['applied_at'])); ?></td>
+                                            <td>
+                                                <?php if($leave['status'] == 'pending'): ?>
+                                                    <span class="badge bg-warning">🟡 Pending</span>
+                                                <?php elseif($leave['status'] == 'approved'): ?>
+                                                    <span class="badge bg-success">🟢 Approved</span>
+                                                <?php else: ?>
+                                                    <span class="badge bg-danger">🔴 Rejected</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <?php if($leave['status'] == 'pending'): ?>
+                                                    <span class="text-muted">Awaiting Review</span>
+                                                <?php else: ?>
+                                                    <?php if($leave['reviewed_by_name']): ?>
+                                                        <strong><?php echo $leave['reviewed_by_name']; ?></strong><br>
+                                                        <small class="text-muted"><?php echo date('M d, Y H:i', strtotime($leave['reviewed_at'])); ?></small>
+                                                    <?php else: ?>
+                                                        <span class="text-muted">System</span>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- My Previous Feedback -->
                 <div class="modern-card">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -535,6 +606,39 @@ $my_feedback = array_slice($my_feedback, 0, 10); // Show last 10 feedback
                         <button class="btn btn-secondary w-100 mb-2" onclick="uploadAvalon()">
                             <i class="fas fa-upload me-2"></i>Upload Avalon
                         </button>
+                        <a href="../scan_attendance.php" class="btn btn-warning w-100 mb-2">
+                            <i class="fas fa-qrcode me-2"></i>Scan QR for Mess
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact Staff -->
+                <div class="modern-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-users"></i> Contact Staff
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <?php 
+                        $staff_query = executeQuery($pdo, "SELECT id, name, role, email FROM staff WHERE hostel_id = ? LIMIT 5", [$student['hostel_id'] ?? 1]);
+                        $staff_list = $staff_query ? $staff_query->fetchAll() : [];
+                        ?>
+                        <?php if (empty($staff_list)): ?>
+                            <p class="text-muted">No staff contacts available</p>
+                        <?php else: ?>
+                            <?php foreach($staff_list as $staff): ?>
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                                <div>
+                                    <h6 class="mb-0"><?php echo $staff['name']; ?></h6>
+                                    <small class="text-muted"><?php echo ucwords(str_replace('_', ' ', $staff['role'])); ?></small>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary" onclick="openMessageModal('staff', <?php echo $staff['id']; ?>, '<?php echo addslashes($staff['email']); ?>')" title="Send Message">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                            </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -682,6 +786,53 @@ $my_feedback = array_slice($my_feedback, 0, 10); // Show last 10 feedback
         </div>
     </div>
 
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="mb-3">
+                            <label class="form-label">Student Name</label>
+                            <input type="text" class="form-control" id="editName" value="<?php echo htmlspecialchars($student['name']); ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="editEmail" value="<?php echo htmlspecialchars($student['email'] ?? ''); ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contact Number</label>
+                            <input type="tel" class="form-control" id="editContact" value="<?php echo htmlspecialchars($student['contact'] ?? ''); ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Course</label>
+                            <input type="text" class="form-control" id="editCourse" value="<?php echo htmlspecialchars($student['course']); ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Academic Year</label>
+                            <select class="form-control" id="editYear">
+                                <option value="1" <?php echo $student['year'] == 1 ? 'selected' : ''; ?>>1st Year</option>
+                                <option value="2" <?php echo $student['year'] == 2 ? 'selected' : ''; ?>>2nd Year</option>
+                                <option value="3" <?php echo $student['year'] == 3 ? 'selected' : ''; ?>>3rd Year</option>
+                                <option value="4" <?php echo $student['year'] == 4 ? 'selected' : ''; ?>>4th Year</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updateProfile()">Update Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php include '../includes/message_component.php'; ?>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -931,6 +1082,11 @@ $my_feedback = array_slice($my_feedback, 0, 10); // Show last 10 feedback
         function refreshFeedback() {
             location.reload();
         }
+        
+        // Refresh leave status
+        function refreshLeaveStatus() {
+            location.reload();
+        }
 
         // Quick Actions
         function submitComplaint() {
@@ -1006,6 +1162,48 @@ $my_feedback = array_slice($my_feedback, 0, 10); // Show last 10 feedback
             });
         }
 
+        // Edit Profile Functions
+        function openEditProfileModal() {
+            new bootstrap.Modal(document.getElementById('editProfileModal')).show();
+        }
+        
+        function updateProfile() {
+            const formData = new FormData();
+            formData.append('action', 'update_student_profile');
+            formData.append('name', document.getElementById('editName').value);
+            formData.append('email', document.getElementById('editEmail').value);
+            formData.append('contact', document.getElementById('editContact').value);
+            formData.append('course', document.getElementById('editCourse').value);
+            formData.append('year', document.getElementById('editYear').value);
+            
+            const updateBtn = event.target;
+            const originalText = updateBtn.innerHTML;
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+            updateBtn.disabled = true;
+            
+            fetch('../handlers/student_actions.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Profile updated successfully!');
+                    bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+                    location.reload();
+                } else {
+                    alert('❌ Error: ' + data.message);
+                }
+                updateBtn.innerHTML = originalText;
+                updateBtn.disabled = false;
+            })
+            .catch(error => {
+                alert('❌ Error updating profile');
+                updateBtn.innerHTML = originalText;
+                updateBtn.disabled = false;
+            });
+        }
+        
         // Auto-hide alerts
         setTimeout(function() {
             const alerts = document.querySelectorAll('.alert');

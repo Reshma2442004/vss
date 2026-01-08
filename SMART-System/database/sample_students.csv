@@ -1,0 +1,6 @@
+grn,password,first_name,last_name,email,phone,father_name,mother_name,class,section,roll_number,hostel_room,is_hostel_student
+GRN001,pass123,John,Doe,john@email.com,9876543210,Robert Doe,Mary Doe,10,A,101,H1-201,true
+GRN002,pass456,Jane,Smith,jane@email.com,9876543211,Michael Smith,Sarah Smith,10,A,102,H1-202,true
+GRN003,pass789,Alex,Johnson,alex@email.com,9876543212,David Johnson,Lisa Johnson,10,B,103,,false
+GRN004,pass321,Emma,Brown,emma@email.com,9876543213,James Brown,Anna Brown,11,A,201,H2-101,true
+GRN005,pass654,Mike,Wilson,mike@email.com,9876543214,Tom Wilson,Kate Wilson,11,B,202,H2-102,true

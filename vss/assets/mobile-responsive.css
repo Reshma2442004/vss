@@ -1,0 +1,498 @@
+/* Mobile-First Responsive Design for VSS Hostel Management System */
+
+/* Base responsive setup */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Container responsive */
+.container, .container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+    max-width: 100%;
+}
+
+/* Dashboard container mobile */
+.dashboard-container {
+    padding: 1rem !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* Header responsive */
+.dashboard-header {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 1rem !important;
+}
+
+.dashboard-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.dashboard-subtitle {
+    font-size: 0.9rem !important;
+}
+
+/* Navigation responsive */
+.navbar {
+    padding: 0.5rem 1rem !important;
+}
+
+.navbar-brand {
+    font-size: 1.1rem !important;
+}
+
+.navbar-nav {
+    flex-direction: column !important;
+    width: 100% !important;
+}
+
+.navbar-text {
+    font-size: 0.85rem !important;
+    margin: 0.5rem 0 !important;
+}
+
+/* Grid systems responsive */
+.stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+}
+
+.dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+}
+
+/* Cards responsive */
+.dashboard-card, .stat-card, .modern-card {
+    margin-bottom: 1rem !important;
+    border-radius: 12px !important;
+}
+
+.card-content, .card-body {
+    padding: 1rem !important;
+}
+
+.card-header {
+    padding: 1rem !important;
+}
+
+.stat-card {
+    padding: 1.5rem !important;
+    text-align: center !important;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px) scale(1.01) !important;
+}
+
+.stat-icon {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 1.2rem !important;
+    margin: 0 auto 1rem !important;
+}
+
+.stat-number {
+    font-size: 2rem !important;
+}
+
+.stat-label {
+    font-size: 0.85rem !important;
+}
+
+/* Tables responsive */
+.table-responsive {
+    border-radius: 8px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.modern-table {
+    min-width: 600px !important;
+    font-size: 0.85rem !important;
+}
+
+.modern-table th,
+.modern-table td {
+    padding: 0.75rem 0.5rem !important;
+    white-space: nowrap !important;
+}
+
+.modern-table th {
+    font-size: 0.75rem !important;
+}
+
+/* Forms responsive */
+.form-input, .form-control {
+    padding: 0.75rem !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    border-radius: 8px !important;
+    width: 100% !important;
+}
+
+.form-group {
+    margin-bottom: 1rem !important;
+}
+
+.form-label {
+    font-size: 0.85rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Buttons responsive */
+.btn {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.9rem !important;
+    border-radius: 8px !important;
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.8rem !important;
+}
+
+.btn-group {
+    flex-direction: column !important;
+    width: 100% !important;
+}
+
+.btn-group .btn {
+    margin-bottom: 0.5rem !important;
+    border-radius: 8px !important;
+}
+
+/* Modal responsive */
+.modal-dialog {
+    margin: 1rem !important;
+    max-width: calc(100% - 2rem) !important;
+}
+
+.modal-content {
+    border-radius: 12px !important;
+}
+
+.modal-header, .modal-body, .modal-footer {
+    padding: 1rem !important;
+}
+
+.modal-title {
+    font-size: 1.1rem !important;
+}
+
+/* Alert responsive */
+.alert {
+    padding: 1rem !important;
+    font-size: 0.9rem !important;
+    border-radius: 8px !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Badge responsive */
+.badge, .status-badge, .table-badge {
+    font-size: 0.7rem !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 6px !important;
+}
+
+/* Login/Register forms responsive */
+.login-container, .register-container {
+    width: 100% !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+    padding: 1rem !important;
+}
+
+.login-card, .register-card {
+    border-radius: 16px !important;
+    margin: 0 !important;
+}
+
+.login-header, .register-header {
+    padding: 2rem 1.5rem 1.5rem !important;
+}
+
+.login-body, .register-body {
+    padding: 0 1.5rem 1.5rem !important;
+}
+
+.login-title, .register-title {
+    font-size: 1.5rem !important;
+}
+
+.logo {
+    width: 50px !important;
+    height: 50px !important;
+    margin-bottom: 1rem !important;
+}
+
+.logo i {
+    font-size: 1.5rem !important;
+}
+
+/* QR Code responsive */
+.qr-container {
+    text-align: center !important;
+    padding: 1rem !important;
+}
+
+.qr-code {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Scanner responsive */
+#scanner-container {
+    width: 100% !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+}
+
+#scanner-container video {
+    width: 100% !important;
+    height: auto !important;
+    border-radius: 8px !important;
+}
+
+/* Progress bars responsive */
+.progress {
+    height: 6px !important;
+    border-radius: 6px !important;
+}
+
+.occupancy-bar {
+    width: 80px !important;
+    height: 6px !important;
+}
+
+/* Text responsive */
+h1 { font-size: 1.75rem !important; }
+h2 { font-size: 1.5rem !important; }
+h3 { font-size: 1.25rem !important; }
+h4 { font-size: 1.1rem !important; }
+h5 { font-size: 1rem !important; }
+h6 { font-size: 0.9rem !important; }
+
+p, div, span {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+}
+
+/* Utility classes */
+.text-center-mobile {
+    text-align: center !important;
+}
+
+.d-block-mobile {
+    display: block !important;
+}
+
+.w-100-mobile {
+    width: 100% !important;
+}
+
+.mb-mobile {
+    margin-bottom: 1rem !important;
+}
+
+.p-mobile {
+    padding: 1rem !important;
+}
+
+/* Hide on mobile */
+.d-none-mobile {
+    display: none !important;
+}
+
+/* Show only on mobile */
+.d-mobile-only {
+    display: block !important;
+}
+
+/* Tablet responsive (768px and up) */
+@media (min-width: 768px) {
+    .dashboard-container {
+        padding: 1.5rem !important;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.5rem !important;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .dashboard-header {
+        flex-direction: row !important;
+        text-align: left !important;
+        justify-content: space-between !important;
+    }
+    
+    .btn {
+        width: auto !important;
+        display: inline-flex !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    .btn-group {
+        flex-direction: row !important;
+        width: auto !important;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 0 !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    .d-mobile-only {
+        display: none !important;
+    }
+}
+
+/* Desktop responsive (992px and up) */
+@media (min-width: 992px) {
+    .dashboard-container {
+        padding: 2rem !important;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
+    }
+    
+    .dashboard-title {
+        font-size: 2.5rem !important;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem !important;
+    }
+    
+    .modern-table th,
+    .modern-table td {
+        padding: 1.25rem 1.5rem !important;
+    }
+}
+
+/* Large desktop (1200px and up) */
+@media (min-width: 1200px) {
+    .dashboard-container {
+        max-width: 1400px !important;
+    }
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+    .btn, .dashboard-card, .stat-card {
+        transition: none !important;
+    }
+    
+    .btn:hover, .dashboard-card:hover, .stat-card:hover {
+        transform: none !important;
+    }
+    
+    .btn:active {
+        transform: scale(0.98) !important;
+        transition: transform 0.1s !important;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo, .stat-icon {
+        image-rendering: -webkit-optimize-contrast !important;
+        image-rendering: crisp-edges !important;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+    .dashboard-header {
+        padding: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .dashboard-title {
+        font-size: 1.25rem !important;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .stat-card {
+        padding: 1rem !important;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .btn, .navbar, .modal, .alert {
+        display: none !important;
+    }
+    
+    .dashboard-container {
+        padding: 0 !important;
+    }
+    
+    .dashboard-card {
+        break-inside: avoid !important;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .form-input, .form-control {
+        background: #2d3748 !important;
+        color: #e2e8f0 !important;
+        border-color: #4a5568 !important;
+    }
+    
+    .dashboard-card, .stat-card, .modern-card {
+        background: rgba(45, 55, 72, 0.95) !important;
+        color: #e2e8f0 !important;
+    }
+}

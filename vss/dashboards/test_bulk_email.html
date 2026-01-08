@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Bulk Email</title>
+    <script>
+        function testBulkEmail() {
+            console.log('sendBulkEmail called');
+            
+            const checkboxes = document.querySelectorAll('.student-checkbox:checked');
+            console.log('Selected checkboxes:', checkboxes.length);
+            
+            if (checkboxes.length === 0) {
+                alert('No students selected');
+                return;
+            }
+            
+            const students = [];
+            checkboxes.forEach(cb => {
+                students.push({
+                    id: cb.dataset.studentId,
+                    name: cb.dataset.studentName,
+                    email: cb.dataset.studentEmail
+                });
+            });
+            
+            console.log('Students:', students);
+            alert('Found ' + students.length + ' students');
+        }
+    </script>
+</head>
+<body>
+    <h3>Test Bulk Email Selection</h3>
+    <input type="checkbox" class="student-checkbox" data-student-id="1" data-student-name="John" data-student-email="john@test.com"> John<br>
+    <input type="checkbox" class="student-checkbox" data-student-id="2" data-student-name="Jane" data-student-email="jane@test.com"> Jane<br>
+    <button onclick="testBulkEmail()">Test Send Bulk Email</button>
+</body>
+</html>

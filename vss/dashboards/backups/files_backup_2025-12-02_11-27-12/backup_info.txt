@@ -1,0 +1,14 @@
+VSS HOSTEL MANAGEMENT SYSTEM - FILES BACKUP
+==========================================
+
+Backup Type: Files Only
+Created Date: 2025-12-02 11:27:12
+System: VSS Hostel Management
+
+INCLUDES:
+- Profile photos
+- Documents
+- QR codes
+- CSV files
+- Images
+

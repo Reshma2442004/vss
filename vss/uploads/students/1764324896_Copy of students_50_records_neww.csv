@@ -1,0 +1,53 @@
+GRN no.,First Name,Middle Name,Last Name,Mother's Name,Student Mobile Number,Parents Mobile Number,Email,Course,Faculty,Samiti Year,College Year,Duration of Course (years),Hostel Allocation,Wing,Floor,Room no.
+M2425-11522,Aditya,V,Deshmukh,Usha Rane,8042750911,9387016711,aditya.deshmukh15@example.com,BBA,Management,2024,Second,2,New Girls Hostel,A,1,101
+M2425-11523,Sneha,T,Joshi,Lata Kulkarni,7604280077,8944260164,sneha.joshi75@example.com,B.Sc,Science,2021,Third,2,New Girls Hostel,A,1,102
+M2425-11524,Aniket,D,Joshi,Lata Patil,9444455235,9595266365,aniket.joshi35@example.com,M.Com,Commerce,2021,Third,3,New Girls Hostel,A,1,103
+M2425-11525,Aarav,T,Kulkarni,Rekha Deshmukh,8248374090,9399008489,aarav.kulkarni19@example.com,B.A,Arts,2024,Second,2,New Girls Hostel,A,1,104
+M2425-11526,Aditya,D,Joshi,Sunita Joshi,9294405596,8861346454,aditya.joshi77@example.com,B.Tech,Engineering,2025,Second,4,New Girls Hostel,A,1,105
+M2425-11527,Pooja,L,Rane,Sangeeta Joshi,7486518344,9517851392,pooja.rane69@example.com,M.Com,Commerce,2024,Second,4,New Girls Hostel,A,1,106
+M2425-11528,Amol,L,Deshmukh,Archana Joshi,8791436003,9934367860,amol.deshmukh57@example.com,BCA,Computer Science,2023,Fourth,3,New Girls Hostel,A,1,107
+M2425-11529,Aarav,V,Pawar,Sangeeta Kulkarni,9099925107,7615448292,aarav.pawar30@example.com,Diploma,Polytechnic,2024,First,3,New Girls Hostel,A,1,108
+M2425-11530,Neha,S,Kadam,Sunita Pawar,6817914536,7904561960,neha.kadam78@example.com,BCA,Computer Science,2025,Fourth,3,New Girls Hostel,A,1,109
+M2425-11531,Rohan,P,Pawar,Sunita Pawar,8861332812,6899478170,rohan.pawar28@example.com,B.A,Arts,2024,First,4,New Girls Hostel,A,1,110
+M2425-11532,Karan,S,Joshi,Meena Kadam,8534894798,8878668697,karan.joshi65@example.com,B.Com,Commerce,2024,Third,3,New Girls Hostel,A,1,111
+M2425-11533,Karan,T,Gavankar,Usha More,8452867953,7711502165,karan.gavankar68@example.com,B.Tech,Engineering,2023,First,3,New Girls Hostel,A,1,112
+M2425-11534,Aarav,M,More,Archana Kadam,8341621086,7024187175,aarav.more90@example.com,M.Com,Commerce,2024,Fourth,3,New Girls Hostel,A,1,113
+M2425-11535,Mitali,D,Shinde,Usha Kulkarni,9005921914,6710934605,mitali.shinde34@example.com,B.Com,Commerce,2021,Fourth,4,New Girls Hostel,A,2,201
+M2425-11536,Isha,R,Kulkarni,Sangeeta Kulkarni,7189145278,6840792345,isha.kulkarni41@example.com,M.Com,Commerce,2024,Third,3,New Girls Hostel,A,2,202
+M2425-11537,Aniket,T,More,Rekha Gavankar,6203356306,6977780267,aniket.more46@example.com,B.Sc,Science,2023,Third,4,New Girls Hostel,A,2,203
+M2425-11538,Karan,P,Pawar,Lata Gavankar,9757033045,8256132116,karan.pawar93@example.com,M.Com,Commerce,2023,Second,2,New Girls Hostel,A,2,204
+M2425-11539,Rohan,P,More,Rekha Pawar,6764539919,8813699371,rohan.more96@example.com,BCA,Computer Science,2023,Fourth,3,New Girls Hostel,A,2,205
+M2425-11540,Rahul,T,Rane,Lata Pawar,9405083255,9477345907,rahul.rane26@example.com,BBA,Management,2023,First,2,New Girls Hostel,A,2,206
+M2425-11541,Aarav,K,Patil,Neeta More,8913468417,6887025910,aarav.patil91@example.com,BBA,Management,2024,Second,2,New Girls Hostel,A,2,207
+M2425-11542,Rahul,T,Gavankar,Sunita Rane,7483701109,6212135564,rahul.gavankar66@example.com,Diploma,Polytechnic,2021,Fourth,2,New Girls Hostel,A,2,208
+M2425-11543,Pooja,L,Joshi,Lata Pawar,6790944338,8422925837,pooja.joshi88@example.com,B.Com,Commerce,2022,Third,2,New Girls Hostel,A,2,209
+M2425-11544,Isha,M,Shinde,Usha Kulkarni,6130476920,6072466245,isha.shinde89@example.com,B.Com,Commerce,2022,First,3,New Girls Hostel,A,2,210
+M2425-11545,Aniket,S,Gavankar,Meena Rane,6926572016,9791098154,aniket.gavankar17@example.com,B.Com,Commerce,2022,Third,2,New Girls Hostel,A,2,211
+M2425-11546,Sai,T,More,Sunita Kadam,8911641689,8776386695,sai.more29@example.com,BBA,Management,2025,First,4,New Girls Hostel,A,2,212
+M2425-11547,Vaishnavi,T,Patil,Seema Gavankar,6134889547,6028742554,vaishnavi.patil75@example.com,B.Tech,Engineering,2024,Fourth,4,New Girls Hostel,A,2,213
+M2425-11548,Isha,V,Pawar,Rekha Patil,7719958855,9266140073,isha.pawar11@example.com,B.Sc,Science,2021,Third,2,New Girls Hostel,A,3,301
+M2425-11549,Sneha,N,Rane,Seema Deshmukh,7451325984,7449935313,sneha.rane91@example.com,B.A,Arts,2021,Fourth,3,New Girls Hostel,A,3,302
+M2425-11550,Prajakta,V,Rane,Lata Kadam,8764446637,8336131120,prajakta.rane38@example.com,M.Com,Commerce,2024,Second,3,New Girls Hostel,A,3,303
+M2425-11551,Mitali,R,Shinde,Kavita Joshi,8649173028,9735169429,mitali.shinde57@example.com,BCA,Computer Science,2023,Second,4,New Girls Hostel,A,3,304
+M2425-11552,Amol,L,More,Meena Patil,9657526195,9018645729,amol.more33@example.com,BBA,Management,2022,First,4,New Girls Hostel,A,3,305
+M2425-11553,Anjali,K,Pawar,Sangeeta Gavankar,6633067881,7604989792,anjali.pawar20@example.com,BBA,Management,2021,Second,3,New Girls Hostel,A,3,306
+M2425-11554,Aarav,M,Kulkarni,Kavita Gavankar,8852270844,6080965166,aarav.kulkarni89@example.com,B.A,Arts,2024,Second,4,New Girls Hostel,A,3,307
+M2425-11555,Aniket,K,Pawar,Kavita Kadam,9987338953,8200143553,aniket.pawar64@example.com,B.A,Arts,2025,First,4,New Girls Hostel,A,3,308
+M2425-11556,Anjali,V,Gavankar,Sunita Rane,8870593386,7126232260,anjali.gavankar51@example.com,Diploma,Polytechnic,2021,First,4,New Girls Hostel,A,3,309
+M2425-11557,Aditya,R,Shinde,Archana Kulkarni,7048541065,6962602592,aditya.shinde11@example.com,BBA,Management,2021,Second,3,New Girls Hostel,A,3,310
+M2425-11558,Neha,V,Gavankar,Archana Pawar,9025358666,7210098780,neha.gavankar94@example.com,BCA,Computer Science,2021,Second,2,New Girls Hostel,A,3,311
+M2425-11559,Siddharth,R,Joshi,Meena Rane,8258159036,9425795739,siddharth.joshi64@example.com,BCA,Computer Science,2025,First,2,New Girls Hostel,A,3,312
+M2425-11560,Siddharth,M,Patil,Meena Joshi,8384764104,6429058772,siddharth.patil73@example.com,B.A,Arts,2022,First,3,New Girls Hostel,A,3,313
+M2425-11561,Prajakta,R,Shinde,Seema Pawar,6858337834,6687679964,prajakta.shinde56@example.com,B.Tech,Engineering,2021,First,4,New Girls Hostel,A,4,401
+M2425-11562,Karan,M,Gavankar,Kavita Gavankar,8090928581,6794340141,karan.gavankar67@example.com,Diploma,Polytechnic,2025,Third,2,New Girls Hostel,A,4,402
+M2425-11563,Neha,T,Rane,Usha Gavankar,6575616078,6469340182,neha.rane85@example.com,Diploma,Polytechnic,2021,First,3,New Girls Hostel,A,4,403
+M2425-11564,Siddharth,D,Rane,Lata Kadam,7496377158,7108992296,siddharth.rane84@example.com,Diploma,Polytechnic,2023,First,2,New Girls Hostel,A,4,404
+M2425-11565,Isha,P,Deshmukh,Usha Shinde,6468226959,8196273667,isha.deshmukh24@example.com,B.Tech,Engineering,2023,Third,2,New Girls Hostel,A,4,405
+M2425-11566,Sai,V,Pawar,Rekha Patil,9520302913,6681302039,sai.pawar41@example.com,BBA,Management,2025,Third,3,New Girls Hostel,A,4,406
+M2425-11567,Neha,V,More,Usha Kulkarni,9115569821,6693702366,neha.more31@example.com,BBA,Management,2022,Third,3,New Girls Hostel,A,4,407
+M2425-11568,Siddharth,T,Gavankar,Seema Rane,8115325740,8393142422,siddharth.gavankar54@example.com,B.A,Arts,2021,Third,3,New Girls Hostel,A,4,408
+M2425-11569,Neha,N,Patil,Lata Rane,8927354097,6175286999,neha.patil73@example.com,BBA,Management,2023,First,4,New Girls Hostel,A,4,409
+M2425-11570,Aniket,D,Shinde,Neeta Gavankar,9370513948,6914882840,aniket.shinde94@example.com,BBA,Management,2025,First,4,New Girls Hostel,A,4,410
+M2425-11571,Aarav,L,Gavankar,Lata Deshmukh,8331765827,9683328318,aarav.gavankar62@example.com,B.Tech,Engineering,2025,Second,3,New Girls Hostel,A,4,411
+M2425-11572,Aditi,R,Shinde,Archana Kulkarni,7048541065,6962602592,aditya.shinde11@example.com,BBA,Management,2021,Second,3,New Girls Hostel,A,4,412
+M2425-11573,Akaay,L,More,Meena Patil,9657526195,9018645729,amol.more33@example.com,BBA,Management,2022,First,4,New Girls Hostel,A,4,413

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../config/database.php';
+require_once '../config/email_config.php';
 require_once '../includes/NotificationTriggers.php';
 
 header('Content-Type: application/json');
@@ -288,45 +289,43 @@ if ($_POST && isset($_POST['action'])) {
                 }
                 break;
                 
+            case 'update_complaint_status':
+                $complaint_id = $_POST['complaint_id'];
+                $status = $_POST['status'];
+                
+                if (!in_array($status, ['pending', 'in_progress', 'resolved'])) {
+                    echo json_encode(['success' => false, 'message' => 'Invalid status']);
+                    break;
+                }
+                
+                $resolved_at = $status === 'resolved' ? 'NOW()' : 'NULL';
+                $stmt = $pdo->prepare("UPDATE complaints SET status = ?, resolved_at = {$resolved_at} WHERE id = ?");
+                $stmt->execute([$status, $complaint_id]);
+                
+                if ($stmt->rowCount() > 0) {
+                    echo json_encode(['success' => true, 'message' => "Complaint status updated to {$status}"]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Complaint not found']);
+                }
+                break;
+                
             case 'update_leave_status':
                 $leave_id = $_POST['leave_id'];
                 $status = $_POST['status'];
                 
-                // Create table if not exists
-                $pdo->exec("CREATE TABLE IF NOT EXISTS leave_applications (
-                    id INT PRIMARY KEY AUTO_INCREMENT,
-                    student_id INT NOT NULL,
-                    leave_type ENUM('sick', 'emergency', 'personal', 'home', 'other') NOT NULL,
-                    start_date DATE NOT NULL,
-                    end_date DATE NOT NULL,
-                    reason TEXT NOT NULL,
-                    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
-                    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    reviewed_at TIMESTAMP NULL,
-                    reviewed_by INT NULL,
-                    rector_comments TEXT NULL,
-                    FOREIGN KEY (student_id) REFERENCES students(id)
-                )");
+                if (!in_array($status, ['approved', 'rejected'])) {
+                    echo json_encode(['success' => false, 'message' => 'Invalid status']);
+                    break;
+                }
                 
-                $stmt = $pdo->prepare("UPDATE leave_applications SET status = ?, reviewed_by = ?, reviewed_at = NOW() WHERE id = ?");
+                // Only update if status is pending
+                $stmt = $pdo->prepare("UPDATE leave_applications SET status = ?, reviewed_by = ?, reviewed_at = NOW() WHERE id = ? AND status = 'pending'");
                 $stmt->execute([$status, $_SESSION['user_id'], $leave_id]);
                 
                 if ($stmt->rowCount() > 0) {
-                    // Send email notification to student
-                    $student_stmt = $pdo->prepare("SELECT s.name, s.email FROM students s JOIN leave_applications la ON s.id = la.student_id WHERE la.id = ?");
-                    $student_stmt->execute([$leave_id]);
-                    $student_data = $student_stmt->fetch();
-                    
-                    if ($student_data && !empty($student_data['email'])) {
-                        $emailNotification = new EmailNotification();
-                        $subject = "Leave Application {$status}";
-                        $message = "Dear {$student_data['name']}, your leave application has been {$status}.";
-                        $emailNotification->sendEmail($student_data['email'], $subject, $message);
-                    }
-                    
-                    echo json_encode(['success' => true, 'message' => 'Leave application status updated successfully']);
+                    echo json_encode(['success' => true, 'message' => "Leave application {$status} successfully"]);
                 } else {
-                    echo json_encode(['success' => false, 'message' => 'Leave application not found']);
+                    echo json_encode(['success' => false, 'message' => 'Leave application not found or already processed']);
                 }
                 break;
                 

@@ -1,0 +1,62 @@
+BULK EMAIL FUNCTIONALITY - HOW TO USE
+=====================================
+
+The Bulk Email button is ALREADY WORKING in the rector dashboard.
+
+STEP-BY-STEP INSTRUCTIONS:
+--------------------------
+
+1. LOGIN as Rector
+   - Go to: http://localhost/vss/vss/auth/login.php
+   - Enter rector credentials
+
+2. NAVIGATE to Students Management Section
+   - Scroll down to "Students Management" card
+   - You'll see buttons: Clear Old Data, Remove Duplicates, Export, Add Student, Send Email, Bulk Email
+
+3. CLICK "Bulk Email" Button
+   - This activates bulk email mode
+   - Checkboxes will appear in the first column of the student table
+   - You'll see bulk email controls appear above the table
+
+4. SELECT Students
+   - Check the boxes next to students you want to email
+   - OR click "Select All" to select all visible students
+   - The counter shows: "Send to Selected (X)" where X is the number selected
+
+5. CLICK "Send to Selected (X)" Button
+   - A modal will open showing all selected students
+   - You'll see: From, Email Type, Subject, Message, Attachments
+
+6. COMPOSE Email
+   - Enter Subject (required)
+   - Enter Message (required)
+   - Choose Email Type:
+     * Individual emails (personalized) - sends separate email to each
+     * Single email with BCC (faster) - sends one email with all in BCC
+   - Optionally add file attachments or links
+
+7. SEND Email
+   - Click "Send to All Selected" button
+   - Wait for confirmation message
+   - You'll see: "Sent: X, Failed: Y"
+
+8. EXIT Bulk Mode
+   - Click "Cancel" in bulk controls
+   - OR the mode exits automatically after sending
+
+TROUBLESHOOTING:
+----------------
+- If button doesn't work: Check browser console (F12) for errors
+- If no students appear: Upload students via CSV first
+- If email fails: Check email configuration in config/email_config.php
+- If checkboxes don't appear: Refresh the page and try again
+
+FILES INVOLVED:
+---------------
+- rector.php (line 1222): Bulk Email button
+- rector_functions.js: All bulk email JavaScript functions
+- send_bulk_email.php: Backend email sending handler
+- email_config.php: SMTP configuration
+
+The functionality is COMPLETE and WORKING!
